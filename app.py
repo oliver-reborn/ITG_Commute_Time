@@ -5,6 +5,8 @@ import ast
 from dateutil.parser import parse
 from datetime import datetime
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams['font.family'] = 'Microsoft JhengHei'  # 設定使用微軟正黑體
 
 # 計算兩點距離（km）
 def calc_distance(coords):
