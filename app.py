@@ -4,10 +4,8 @@ from datetime import datetime, timedelta
 from geopy.distance import geodesic
 import matplotlib.pyplot as plt
 import matplotlib
-import ast
-
-# ✅ 解決中文亂碼（適用於大多數系統）
-matplotlib.rcParams['font.sans-serif'] = ['Taipei Sans TC Beta', 'Microsoft JhengHei', 'sans-serif']
+matplotlib.rcParams['font.family'] = 'Microsoft JhengHei'
+matplotlib.rcParams['axes.unicode_minus'] = False
 
 # ✅ 計算距離
 def calc_distance(coords):
