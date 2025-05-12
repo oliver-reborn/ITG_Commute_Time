@@ -68,10 +68,3 @@ if show_chart:
     df_chart = pd.DataFrame({"預估通勤時間（分鐘）": durations}, index=times)
     st.bar_chart(df_chart)
 
-    fig, ax = plt.subplots()
-    ax.bar(times, durations, color='skyblue')
-    ax.set_title("通勤時間 vs 出發時間（每 10 分鐘）")
-    ax.set_xlabel("出發時間")
-    ax.set_ylabel("預估通勤時間（分鐘）")
-    plt.xticks(rotation=45)
-    st.pyplot(fig)
