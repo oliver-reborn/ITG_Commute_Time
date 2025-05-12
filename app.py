@@ -2,17 +2,14 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 from geopy.distance import geodesic
-import matplotlib.pyplot as plt
-import matplotlib
-matplotlib.rcParams['font.family'] = 'Microsoft JhengHei'
-matplotlib.rcParams['axes.unicode_minus'] = False
+import ast
 
-# ✅ 計算距離
+# ✅ 計算路段距離（km）
 def calc_distance(coords):
     p1, p2 = coords
     return geodesic((p1[1], p1[0]), (p2[1], p2[0])).km
 
-# ✅ 模擬速度（根據路段與時間）
+# ✅ 根據路名與時間模擬速度
 def simulate_speed(name, departure_time):
     peak_hours = [(7.0, 8.5), (17.0, 19.0)]
     base_speed = 50
@@ -28,13 +25,13 @@ def simulate_speed(name, departure_time):
     return base_speed * 0.5 if is_peak else base_speed
 
 # ✅ 主介面
-st.title("🚗 通勤時間預測工具(福田水資源至台中工業區)")
+st.title("🚗 通勤時間預測工具（福田水資源 → 台中工業區）")
 st.markdown("請輸入預計出發時間（例如 `07:30`），我會幫你估算通勤所需時間")
 
 departure_str = st.text_input("出發時間（24小時制，例如 07:30）", value="08:00")
 show_chart = st.checkbox("📊 顯示每 10 分鐘出發模擬結果（07:00 ~ 09:00）", value=True)
 
-# ✅ 模擬通勤時間
+# ✅ 模擬通勤時間主函式
 def simulate_commute(departure_time):
     df = pd.read_csv("route_segments_with_real_names.csv")
     df["segment_coords"] = df["segment_coords"].apply(ast.literal_eval)
@@ -44,7 +41,7 @@ def simulate_commute(departure_time):
     total_minutes = df["simulated_duration_sec"].sum() / 60
     return total_minutes, df
 
-# ✅ 單一輸入時間模擬
+# ✅ 按下模擬按鈕
 if st.button("開始模擬"):
     try:
         departure_time = datetime.strptime(departure_str, "%H:%M")
@@ -54,21 +51,16 @@ if st.button("開始模擬"):
     except:
         st.error("❌ 請輸入正確時間格式，例如：07:30")
 
-# ✅ 顯示圖表
+# ✅ 顯示柱狀圖（使用 st.bar_chart 避免字體問題）
 if show_chart:
     times = []
     durations = []
-    for i in range(13):  # 每 10 分鐘共 13 筆（07:00 ~ 09:00）
+    for i in range(13):
         dt = datetime.strptime("07:00", "%H:%M") + timedelta(minutes=10*i)
         label = dt.strftime("%H:%M")
         minutes, _ = simulate_commute(dt)
         times.append(label)
         durations.append(minutes)
 
-    fig, ax = plt.subplots()
-    ax.bar(times, durations, color='skyblue')
-    ax.set_title("通勤時間 vs 出發時間（每 10 分鐘）")
-    ax.set_xlabel("出發時間")
-    ax.set_ylabel("預估通勤時間（分鐘）")
-    plt.xticks(rotation=45)
-    st.pyplot(fig)
+    df_chart = pd.DataFrame({"預估通勤時間（分鐘）": durations}, index=times)
+    st.bar_chart(df_chart)
