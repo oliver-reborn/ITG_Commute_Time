@@ -58,12 +58,15 @@ if st.button("開始模擬"):
 if show_chart:
     times = []
     durations = []
-    for i in range(13):  # 每 10 分鐘共 13 筆（07:00 ~ 09:00）
+    for i in range(13):
         dt = datetime.strptime("07:00", "%H:%M") + timedelta(minutes=10*i)
         label = dt.strftime("%H:%M")
         minutes, _ = simulate_commute(dt)
         times.append(label)
         durations.append(minutes)
+
+    df_chart = pd.DataFrame({"預估通勤時間（分鐘）": durations}, index=times)
+    st.bar_chart(df_chart)
 
     fig, ax = plt.subplots()
     ax.bar(times, durations, color='skyblue')
