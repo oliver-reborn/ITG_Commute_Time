@@ -7,7 +7,7 @@ import matplotlib
 import ast
 
 # ✅ 解決中文亂碼（適用於大多數系統）
-matplotlib.rcParams['font.family'] = 'Microsoft JhengHei'
+matplotlib.rcParams['font.sans-serif'] = ['Taipei Sans TC Beta', 'Microsoft JhengHei', 'sans-serif']
 
 # ✅ 計算距離
 def calc_distance(coords):
@@ -30,7 +30,7 @@ def simulate_speed(name, departure_time):
     return base_speed * 0.5 if is_peak else base_speed
 
 # ✅ 主介面
-st.title("🚗 通勤時間預測工具")
+st.title("🚗 通勤時間預測工具(福田水資源至台中工業區)")
 st.markdown("請輸入預計出發時間（例如 `07:30`），我會幫你估算通勤所需時間")
 
 departure_str = st.text_input("出發時間（24小時制，例如 07:30）", value="08:00")
